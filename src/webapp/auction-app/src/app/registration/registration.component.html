@@ -1,0 +1,103 @@
+
+<div class="row padding-class">
+	<div class="container col-sm-4">
+		<div *ngIf="!registrationFirm">
+			<form [formGroup]="registrationForm">
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Ime</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="firstName">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Prezime</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="lastName">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Email</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="email">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Korisničko ime</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="username">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Lozinka</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" formControlName="password">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Grad</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="city">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Adresa</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="address">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Poštanski broj</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="zipCode">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Vrsta korisnika</label>
+					<div class="col-sm-10">
+						<select type="text" class="form-control" formControlName="role" (change)="changeValue()">
+							<option value="ROLE_USER">Korsinik</option>
+							<option value="ROLE_FIRM">Firma</option>
+						</select>
+					</div>
+				</div>
+
+
+
+			</form>
+		</div>
+		<div *ngIf="registrationFirm">
+			<form [formGroup]="firmForm" (submit)="registerFirm()">
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Naziv</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="name">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Vrsta korisnika</label>
+					<div class="col-sm-10">
+						<select type="text" class="form-control" formControlName="category">
+							<option value=""></option>
+							<option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Distanca</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" formControlName="distance">
+					</div>
+				</div>
+				<a routerLink="/login" class="btn btn-outline-dark">Odustani</a>
+				<button [disabled]="!firmForm.valid" type="submit" class="btn btn-outline-dark">Napravite nalog</button>
+			</form>
+
+		</div>
+		<div align="right" *ngIf="!registrationFirm">
+			<a routerLink="/login" class="btn btn-outline-dark">Odustani</a>
+			<button *ngIf="!isFirm" [disabled]="!registrationForm.valid" type="button" class="btn btn-outline-dark" (click)="registration()">Napravite nalog</button>
+			<button *ngIf="isFirm" [disabled]="!registrationForm.valid" type="button" class="btn btn-outline-dark" (click)="registration()">Dalje</button>
+
+		</div>
+	</div>
+</div>

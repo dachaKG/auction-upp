@@ -1,0 +1,10 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~font-awesome/css/font-awesome.css";
+
+.btn:hover {
+	cursor: pointer;
+}
+
+.padding-class {
+	padding-top: 3%;
+}
