@@ -31,7 +31,10 @@ export class LoginComponent implements OnInit {
 					this.authenticate = data;
 					console.log(this.authenticate);
 					localStorage.setItem('app-token',this.authenticate.token);
-					this.router.navigate(['/users']);
+					if(data.role == "ROLE_USER")
+						this.router.navigate(['/user']);
+					else if(data.role == "ROLE_FIRM")
+						this.router.navigate(['/firm']);
 				}
 			);
 		//loginService.login(credentials)

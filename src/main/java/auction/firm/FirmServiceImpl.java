@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import auction.category.Category;
+
 @Service
 @Transactional
 public class FirmServiceImpl implements FirmService {
@@ -27,6 +29,11 @@ public class FirmServiceImpl implements FirmService {
 	@Override
 	public Firm findOne(Long id) {
 		return repository.findOne(id);
+	}
+
+	@Override
+	public List<Firm> findByCategory(Category category) {
+		return repository.findByCategory(category);
 	}
 
 }

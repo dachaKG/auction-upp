@@ -1,5 +1,8 @@
 package auction.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,11 +11,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import auction.firm.Firm;
+import auction.order.OrderGoods;
 
 @Entity
 public class User {
@@ -55,6 +62,10 @@ public class User {
 	private String confirmationMail;
 	
 	private boolean confirmed;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy="user")
+	private List<OrderGoods> orderGoods = new ArrayList<OrderGoods>();
 
 	/*
 	 * @ManyToMany(fetch = FetchType.EAGER)
@@ -174,6 +185,14 @@ public class User {
 
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
+	}
+
+	public List<OrderGoods> getOrderGoods() {
+		return orderGoods;
+	}
+
+	public void setOrderGoods(List<OrderGoods> orderGoods) {
+		this.orderGoods = orderGoods;
 	}
 
 }

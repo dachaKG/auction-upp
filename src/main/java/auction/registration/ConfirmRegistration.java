@@ -29,7 +29,6 @@ public class ConfirmRegistration {
 	public RedirectView confirmRegistration(@RequestParam("token") String token, @RequestParam("task") String task) {
 		Execution execution = runtimeService.createExecutionQuery().processInstanceId(task).signalEventSubscriptionName("Activate user").singleResult();
 		runtimeService.signalEventReceived("Activate user", execution.getId());
-		
 		return new RedirectView("http://localhost:4200/");
 		
 	}

@@ -10,10 +10,15 @@ import { AppRoutingModule } from './/app-routing.module';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { LoginService } from './login/login.service';
-import { UsersComponent } from './users/users.component';
 import { ConfigComponent } from './config/config.component';
-import { UserService } from './users/user.service';
+import { UserService } from './user/user.service';
 import { RegistrationService } from './registration/registration.service';
+import { UserComponent } from './user/user.component';
+import { UserRoutingModule } from './user/user-routing.module';
+import { OrderGoodsComponent } from './user/order-goods/order-goods.component';
+import { FirmComponent } from './firm/firm.component';
+import { FirmService } from './firm/firm.service';
+import { ChangeOrderComponent } from './user/change-order/change-order.component';
 
 
 @NgModule({
@@ -21,8 +26,11 @@ import { RegistrationService } from './registration/registration.service';
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    UsersComponent,
-    ConfigComponent
+    ConfigComponent,
+    UserComponent,
+    OrderGoodsComponent,
+    FirmComponent,
+    ChangeOrderComponent
   ],
   imports: [
     BrowserModule,
@@ -31,9 +39,10 @@ import { RegistrationService } from './registration/registration.service';
     HttpModule,
     RouterModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    UserRoutingModule
   ],
-  providers: [LoginService, UserService, RegistrationService],
+  providers: [LoginService, UserService, RegistrationService, FirmService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

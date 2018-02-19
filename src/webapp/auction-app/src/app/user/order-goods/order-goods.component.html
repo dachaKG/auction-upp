@@ -1,0 +1,58 @@
+
+<div class="row padding-class">
+	<div class="container col-sm-4">
+		<div *ngIf="!registrationFirm">
+			<form [formGroup]="orderForm" (ngSubmit)="orderGoods()">
+
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Kategorija</label>
+					<div class="col-sm-6">
+						<select type="text" class="form-control" formControlName="category">
+							<option value=""></option>
+							<option *ngFor="let category of categories" value="{{category.id}}">{{category.name}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Opis posla</label>
+					<div class="col-sm-6">
+						<textarea class="form-control" rows="3" formControlName="description"></textarea>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Procenjena vrednost</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" formControlName="estimatedValue">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Rok za primanje ponuda</label>
+					<div class="col-sm-6">
+						<input type="date" class="form-control" formControlName="receiveDeadline">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Ocekivani broj ponuda</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control" formControlName="expectedBids">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Rok za obavljanje usluge</label>
+					<div class="col-sm-6">
+						<input type="date" class="form-control" formControlName="serviceDeadline">
+					</div>
+				</div>
+				
+				<div align="right">
+					<a routerLink="/user" class="btn btn-outline-dark">Odustani</a>
+					<button [disabled]="!orderForm.valid" type="submit" class="btn btn-outline-dark">
+					Prijavi zahtev</button>
+
+				</div>
+
+			</form>
+		</div>
+		
+	</div>
+</div>
