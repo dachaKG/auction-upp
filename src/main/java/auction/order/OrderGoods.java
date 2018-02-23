@@ -1,5 +1,6 @@
 package auction.order;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,12 +13,19 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import auction.category.Category;
 import auction.firm.Firm;
 import auction.user.User;
 
 @Entity
-public class OrderGoods {
+public class OrderGoods implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +47,7 @@ public class OrderGoods {
 	@ManyToOne(cascade = CascadeType.DETACH)
 	private User user;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "orderGoods")
 	private List<Firm> firm = new ArrayList<Firm>();
 

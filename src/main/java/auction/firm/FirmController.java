@@ -2,6 +2,8 @@ package auction.firm;
 
 import java.util.List;
 
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,9 @@ public class FirmController {
 	private TokenUtils tokenUtils;
 	
 	@Autowired
+	TaskService taskService;
+	
+	@Autowired
 	UserService userService;
 
 	@PreAuthorize("hasRole('ROLE_FIRM')")
@@ -39,10 +44,13 @@ public class FirmController {
 		User user = userService.findOneByUsername(authentication.getName());
 		Firm firm = user.getFirm();
 		
+		List<Task> myTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+		//model.addAttribute("myTasks", myTasks);
+		System.out.println("broj taskova " + myTasks.size());
 		List<OrderGoods> orderGoods = firm.getOrderGoods();
 		System.out.println("pronadjeni korisnik " + user.getUsername());
 		System.out.println("Firma " + firm.getName());
-		System.out.println("Lista ordera " + firm.getOrderGoods().size());
+		System.out.println("Lista ordera " + orderGoods.size());
 		// User user = authentication.getName();
 
 		return new ResponseEntity<>(orderGoods, HttpStatus.OK);

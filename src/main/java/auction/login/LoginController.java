@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,9 @@ public class LoginController {
 	UserService userService;
 
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	
+	@Autowired
+	IdentityService identityService;
 
 	@SuppressWarnings("unchecked")
 	@PostMapping
@@ -55,6 +59,8 @@ public class LoginController {
 			tokenMap.put("token", token);
 			tokenMap.put("user", user.getUsername());
 			tokenMap.put("role", user.getRole());
+			org.activiti.engine.identity.User actUser = identityService.createUserQuery().userId(user.getUsername()).singleResult();
+			
 			return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.OK);
 		} else {
 			tokenMap.put("token", null);

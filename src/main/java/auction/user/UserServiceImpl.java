@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import auction.firm.Firm;
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -33,6 +35,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User findOneByConfirmationMail(String confirmationMail) {
 		return repository.findOneByConfirmationMail(confirmationMail);
+	}
+
+	@Override
+	public User findOneByFirm(Firm firm) {
+		return repository.findOneByFirm(firm);
 	}
 
 }

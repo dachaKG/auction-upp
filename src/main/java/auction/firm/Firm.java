@@ -1,5 +1,6 @@
 package auction.firm;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,12 @@ import auction.order.OrderGoods;
 import auction.user.User;
 
 @Entity
-public class Firm {
+public class Firm implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

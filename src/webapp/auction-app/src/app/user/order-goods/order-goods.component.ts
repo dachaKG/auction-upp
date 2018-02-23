@@ -33,6 +33,7 @@ export class OrderGoodsComponent implements OnInit {
 	orderGoods(){
 		if(this.orderForm.valid){
 			let value = this.orderForm.value;
+			value.estimatedValue = 
 			this.userService.orderGoods(value).subscribe(data=>console.log("prosao subscribe"));
 		}
 	}

@@ -16,6 +16,7 @@ export class FirmComponent implements OnInit {
 		this.firmService.getFirm()
 			.subscribe(
 				data=>{
+					console.log("aaaa")
 					this.orderGoods = data;
 				}
 
