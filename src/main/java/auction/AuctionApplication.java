@@ -1,7 +1,16 @@
 package auction;
 
+import java.util.List;
+
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import auction.user.UserService;
 
 
 @SpringBootApplication
@@ -16,6 +25,15 @@ public class AuctionApplication {
 	
 	@Autowired
 	static UserService userService;*/
+	
+	@Autowired
+	RepositoryService repositoryService;
+	
+	@Autowired
+	IdentityService identityService;
+	
+	@Autowired
+	UserService userService;
 
 	public static void main(String[] args) {
 		/*
@@ -28,6 +46,35 @@ public class AuctionApplication {
 		SpringApplication.run(AuctionApplication.class, args);
 	}
 	
+	/*@Bean
+	public List<User> allUsers(){
+		
+		
+		Group newGroup;
+		for(int i = 0 ; i < EnumRole.values().length; i++){
+				
+			newGroup = identityService.newGroup(EnumRole.values()[i].toString());
+			newGroup.setName(EnumRole.values()[i].toString());
+			newGroup.setType("assigment");
+			identityService.saveGroup(newGroup);
+		}
+		User newUser;
+		List<auction.user.User> users = userService.findAll();
+		List<User> identUsers = new ArrayList<User>();
+		for(int i = 0 ; i < users.size(); i++) {
+			newUser = identityService.newUser(users.get(i).getUsername());
+			newUser.setFirstName(users.get(i).getFirstName());
+			newUser.setLastName(users.get(i).getLastName());
+			newUser.setEmail(users.get(i).getEmail());
+			newUser.setPassword(users.get(i).getPassword());
+			identityService.saveUser(newUser);
+			identityService.createMembership(newUser.getId(), users.get(i).getRole().toString());
+			identUsers.add(newUser);
+		}	
+		
+		return identUsers;
+		
+	}*/
 	/*private static void initGroupsYml(){
 	
 		Group newGroup;
@@ -57,8 +104,8 @@ public class AuctionApplication {
 			
 	}*/
 	
-	/*
-	@Bean
+	
+	/*@Bean
 	public List<Deployment> clearAll() {
 		System.out.println("clear -----------");
 		for (Deployment d : repositoryService.createDeploymentQuery().list()) {
@@ -66,8 +113,8 @@ public class AuctionApplication {
         }
 		
 		return repositoryService.createDeploymentQuery().list();
-	}*/
-	
+	}
+	*/
 	/*public static Scanner scanner;
 
 	@Bean

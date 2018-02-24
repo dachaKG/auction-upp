@@ -1,0 +1,28 @@
+<div class="row">
+	<div class="container">
+		<form [formGroup]="showTaskForm" novalidate (ngSubmit)="proba()">
+			<div *ngFor="let task of formTasks" class="col-sm-5">
+				<div *ngIf="task.forma.type.name=='string'">
+					<label>{{task.label}}</label>
+					<input type="text" class="form-control" formControlName={{task.forma.id}}>
+				</div>
+				<div *ngIf="task.forma.type.name=='long'">
+					<label>{{task.label}}</label>
+					<input type="number" class="form-control" formControlName={{task.forma.id}}>
+				</div>
+				<div *ngIf="task.forma.type.name=='date'">
+					<label>{{task.label}}</label>
+					<input type="date" class="form-control" formControlName={{task.forma.id}}>
+				</div>
+				<div *ngIf="task.forma.type.name=='enum'">
+					<label>{{task.label}}</label>
+					<select class="form-control" formControlName={{task.forma.id}}>
+						<option *ngFor="let taskValue of enums">{{taskValue}}</option>
+					</select> 
+				</div>
+			</div>
+			<button type="submit">Button</button>
+		</form>
+		<pre>{{showTaskForm.value | json}}</pre>
+	</div>
+</div>

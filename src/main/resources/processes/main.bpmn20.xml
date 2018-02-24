@@ -41,11 +41,17 @@
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="firms" activiti:elementVariable="firm"></multiInstanceLoopCharacteristics>
       <startEvent id="startevent2" name="Start"></startEvent>
       <sequenceFlow id="flow16" sourceRef="startevent2" targetRef="servicetask5"></sequenceFlow>
-      <serviceTask id="servicetask5" name="User Task" activiti:expression="${orderService.sendToFirms(firm)}" activiti:resultVariableName="asignee"></serviceTask>
+      <serviceTask id="servicetask5" name="User Task" activiti:expression="${orderService.sendToFirms(firm, execution.getProcessInstanceId())}" activiti:resultVariableName="asignee"></serviceTask>
       <endEvent id="endevent4" name="End"></endEvent>
-      <userTask id="usertask4" name="User Task" activiti:assignee="asignee">
+      <userTask id="usertask4" name="Posalji ponudu" activiti:assignee="${asignee}">
         <extensionElements>
           <activiti:formProperty id="pera" name="peric" type="string" required="true"></activiti:formProperty>
+          <activiti:formProperty id="decision" name="Da li zelite da date svoju ponudu" type="enum" required="true">
+            <activiti:value id="yes" name="da"></activiti:value>
+            <activiti:value id="no" name="ne"></activiti:value>
+          </activiti:formProperty>
+          <activiti:formProperty id="price" name="Cena" type="long" required="true"></activiti:formProperty>
+          <activiti:formProperty id="date" name="Datum izvrsenja" type="date" required="true"></activiti:formProperty>
         </extensionElements>
       </userTask>
       <sequenceFlow id="flow20" sourceRef="servicetask5" targetRef="usertask4"></sequenceFlow>

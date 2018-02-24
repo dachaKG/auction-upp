@@ -1,23 +1,30 @@
 package auction.firm;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.form.TaskFormData;
+import org.activiti.engine.impl.form.EnumFormType;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import auction.config.TokenUtils;
-import auction.order.OrderGoods;
 import auction.user.User;
 import auction.user.UserService;
 
@@ -26,34 +33,108 @@ import auction.user.UserService;
 @CrossOrigin(origins = "http://localhost:4200")
 public class FirmController {
 
-	@Autowired
-	private TokenUtils tokenUtils;
 	
 	@Autowired
 	TaskService taskService;
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	FormService formService;
 
 	@PreAuthorize("hasRole('ROLE_FIRM')")
 	@GetMapping
-	public ResponseEntity<List<OrderGoods>> getOrderGoods() {
+	public List<Map<String, Object>> getOrderGoods() {
 
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication authentication = context.getAuthentication();
 		User user = userService.findOneByUsername(authentication.getName());
-		Firm firm = user.getFirm();
+		//Firm firm = user.getFirm();
 		
-		List<Task> myTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-		//model.addAttribute("myTasks", myTasks);
-		System.out.println("broj taskova " + myTasks.size());
-		List<OrderGoods> orderGoods = firm.getOrderGoods();
-		System.out.println("pronadjeni korisnik " + user.getUsername());
-		System.out.println("Firma " + firm.getName());
-		System.out.println("Lista ordera " + orderGoods.size());
-		// User user = authentication.getName();
+		List<Task> taskList = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+		
+		List<Map<String, Object>> customTaskList = new ArrayList<>();
+	    for (Task task : taskList) {
+	        Map<String, Object> map = new HashMap<>();
+	        map.put("taskId", task.getId());
+	        System.out.println("id taska " + task.getId());
+	        map.put("taskDefinitionKey", task.getTaskDefinitionKey());
+	        map.put("taskName", task.getName());
 
-		return new ResponseEntity<>(orderGoods, HttpStatus.OK);
+	        customTaskList.add(map);
+	    }
+	    return customTaskList;
+	}
+	
+	@PreAuthorize("hasRole('ROLE_FIRM')")
+	@GetMapping("/showTask/{taskId}")
+	public List<Map<String, Object>> showTask(@PathVariable String taskId){
+		TaskFormData taskFormData = formService.getTaskFormData(taskId);
+		List<FormProperty> formProperties = taskFormData.getFormProperties();
+		//formProperties.get(0).getName()
+		List<Map<String, Object>> customTaskProperties = new ArrayList<>();
+		for(FormProperty formProperty : formProperties) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("label", formProperty.getName());
+			map.put("input", formProperty.getType().getName());
+			map.put("forma", formProperty);
+			if(formProperty.getType().getName().equals("enum")) {
+				map.put("input", "select");
+				EnumFormType enumType = (EnumFormType) formProperty.getType();
+				
+				map.put("values", formProperty.getType().getInformation("values"));
+			} else if (formProperty.getType().getName().equals("long")) {
+				map.put("input", "string");
+
+			} else {
+				map.put("input", formProperty.getType().getName());
+			}
+				
+			//map.put(formProperty.getName(), formProperty.getType().getName());
+			customTaskProperties.add(map);
+		}
+		
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		//model.addAttribute("task", task);
+		
+		//U definiciji procesa je definisan formKey, na osnovu kog se odredjuje 
+		//koja se stranica prikazuje
+		String form = formService.getTaskFormData(taskId).getFormKey();
+		
+		return customTaskProperties;
+	}
+	
+	@PreAuthorize("hasRole('ROLE_FIRM')")
+	@PostMapping("/execute/{taskId}")
+	public String execcuteTask(@PathVariable String taskId, @RequestBody Map<String, String> params){
+		
+		System.out.println(params.toString());
+		
+		return null;
+		/*User user;
+		try{
+			user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		}
+		catch(Exception ex){
+			return "redirect:/login";
+		}
+		
+		String userId = user.getUsername();
+		String message;
+		if (canExecute(taskId, userId)){
+			//pre ovog koraka bi se trebala sprovesti validacija
+			//da li su uneti svi potrebni parametri (required), da li ima neslaganja tipova
+			//ako se unosi email adresa, da li je validna i sl.
+			formService.submitTaskFormData(taskId, params);
+			message = "Zadatak uspeÅ¡no izvrÅ¡en";
+		}
+		else
+			message = "Ne moÅ¾ete izvrÅ¡iti zadatak";
+
+		model.addAttribute("message", message);
+		return showUsersTasks(model);
+*/
 	}
 
 }

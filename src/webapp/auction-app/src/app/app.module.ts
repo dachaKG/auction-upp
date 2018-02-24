@@ -19,6 +19,8 @@ import { OrderGoodsComponent } from './user/order-goods/order-goods.component';
 import { FirmComponent } from './firm/firm.component';
 import { FirmService } from './firm/firm.service';
 import { ChangeOrderComponent } from './user/change-order/change-order.component';
+import { ShowTaskComponent } from './show-task/show-task.component';
+import { ShowTaskService } from './show-task/show-task.service';
 
 
 @NgModule({
@@ -30,7 +32,8 @@ import { ChangeOrderComponent } from './user/change-order/change-order.component
     UserComponent,
     OrderGoodsComponent,
     FirmComponent,
-    ChangeOrderComponent
+    ChangeOrderComponent,
+    ShowTaskComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,7 @@ import { ChangeOrderComponent } from './user/change-order/change-order.component
     HttpClientModule,
     UserRoutingModule
   ],
-  providers: [LoginService, UserService, RegistrationService, FirmService],
+  providers: [LoginService, UserService, RegistrationService, FirmService, ShowTaskService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,20 +6,22 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class FirmService {
+export class ShowTaskService {
 
 	private apiUrl = `${environment.BACKEND_URL}`;
 
 	constructor(private http: Http) { }
 
-	getFirm(){
+	showTask(taskId: string){
 		var headers = new Headers();
 
 		headers.append('Authorization', 'Bearer ' + localStorage.getItem('app-token'));
-
-		return this.http.get(this.apiUrl + "/firm", {headers: headers}).map(res=>res.json());
+		return this.http.get(this.apiUrl + "/firm/showTask/" + taskId, {headers: headers}).map(res=>res.json());
 	}
 
-	
-
+	executeTask(taskId:string, map: any){
+		var headers = new Headers();
+		headers.append('Authorization', 'Bearer ' + localStorage.getItem('app-token'));
+		return this.http.post(this.apiUrl + "/firm/execute/" + taskId, map, { headers: headers }).map(res=>res.json());
+	}
 }

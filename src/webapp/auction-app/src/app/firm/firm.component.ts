@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirmService } from './firm.service';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
 	selector: 'app-firm',
@@ -8,19 +9,39 @@ import { FirmService } from './firm.service';
 })
 export class FirmComponent implements OnInit {
 
-	orderGoods: any;
+	tasks: any;
+	formTask: any
 
-	constructor(private firmService: FirmService) { }
+	constructor(private firmService: FirmService, private router: Router) { }
 
 	ngOnInit() {
 		this.firmService.getFirm()
 			.subscribe(
 				data=>{
 					console.log("aaaa")
-					this.orderGoods = data;
+					this.tasks = data;
 				}
 
 			)
+	}
+
+	showTask(taskId: string){
+		this.firmService
+		console.log(taskId);
+		this.router.navigate(['/task/' + taskId]);
+		/*this.firmService.showTask(taskId)
+			.subscribe(
+				data=>{
+					console.log("prosoa showtask" + data)
+					this.formTask = data;
+					for (var task in this.formTask) {
+
+					}
+
+
+
+				}
+			)*/
 	}
 
 }

@@ -6,11 +6,10 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -51,6 +50,9 @@ public class OrderService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	IdentityService identityService;
 	
 
 	public OrderObjectDTO sendOrder(Long category, String description, Long estimatedValue, Date receiveDeadline, Long expectedBids, Date serviceDeadline) {
@@ -122,15 +124,15 @@ public class OrderService {
 		return order.getFirms();
 	}
 	
-	public void sendToFirms(Firm firm, String executionId) {
+	public String sendToFirms(Firm firm, String executionId) {
 		System.out.println("id firme " + firm.getName());
 		System.out.println("ex " + executionId);
 		User user = firm.getUsers().get(0);
-		TaskQuery task = taskService.createTaskQuery().active().taskCandidateOrAssigned(user.getUsername());
-		TaskQuery task1 = taskService.createTaskQuery().taskAssignee("manager")
+		org.activiti.engine.identity.User actUser = identityService.createUserQuery().userId(user.getUsername()).singleResult();
 		
-		System.out.println(task.taskCandidateOrAssigned(user.getUsername()).count());
+		//System.out.println(task.taskCandidateOrAssigned(user.getUsername()).count());
 		System.out.println("send to firms");
+		return actUser.getId();
 	}
 	
 	public void baki() {
