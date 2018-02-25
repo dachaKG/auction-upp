@@ -19,8 +19,8 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import auction.firm.Firm;
-import auction.order.OrderGoods;
+import auction.model.Firm;
+import auction.model.OrderGoods;
 
 @Entity
 public class User implements Serializable {

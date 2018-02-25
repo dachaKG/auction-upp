@@ -8,12 +8,14 @@ import { RegistrationComponent } from './registration/registration.component';
 import { UserComponent } from './user/user.component';
 import { FirmComponent } from './firm/firm.component';
 import { ShowTaskComponent } from './show-task/show-task.component';
+import { UserTasksComponent } from './user/user-tasks/user-tasks.component';
 
 const routes: Routes = [
 	{ path: '',   component: LoginComponent },
 	{ path: 'login',   component: LoginComponent },
 	{ path: 'registration',   component: RegistrationComponent },
 	{ path : 'user', component: UserComponent},
+	{ path : 'user/tasks', component: UserTasksComponent},
 	{ path : 'firm', component: FirmComponent},
 	{ path : 'task', component: ShowTaskComponent},
 	{ path : 'task/:taskId', component: ShowTaskComponent}

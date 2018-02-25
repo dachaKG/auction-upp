@@ -21,6 +21,7 @@ import { FirmService } from './firm/firm.service';
 import { ChangeOrderComponent } from './user/change-order/change-order.component';
 import { ShowTaskComponent } from './show-task/show-task.component';
 import { ShowTaskService } from './show-task/show-task.service';
+import { UserTasksComponent } from './user/user-tasks/user-tasks.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { ShowTaskService } from './show-task/show-task.service';
     OrderGoodsComponent,
     FirmComponent,
     ChangeOrderComponent,
-    ShowTaskComponent
+    ShowTaskComponent,
+    UserTasksComponent
   ],
   imports: [
     BrowserModule,

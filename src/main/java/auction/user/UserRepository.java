@@ -2,7 +2,7 @@ package auction.user;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import auction.firm.Firm;
+import auction.model.Firm;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 	

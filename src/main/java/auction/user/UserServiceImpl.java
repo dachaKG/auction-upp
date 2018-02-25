@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import auction.firm.Firm;
+import auction.model.Firm;
 
 @Service
 @Transactional

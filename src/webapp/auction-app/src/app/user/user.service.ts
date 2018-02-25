@@ -35,4 +35,14 @@ export class UserService {
 		}, headers: headers })
 	}
 
+	findTasks(){
+		var headers = new Headers();
+
+		headers.append('Authorization', 'Bearer ' + localStorage.getItem('app-token'));
+
+		return this.http.get(this.apiUrl + "/users/tasks", {headers: headers}).map(res=>res.json());
+	}
+
+
+
 }

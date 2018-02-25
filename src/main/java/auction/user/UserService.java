@@ -2,7 +2,7 @@ package auction.user;
 
 import java.util.List;
 
-import auction.firm.Firm;
+import auction.model.Firm;
 
 public interface UserService {
 	

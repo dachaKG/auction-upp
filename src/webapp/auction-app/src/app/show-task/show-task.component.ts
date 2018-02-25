@@ -54,7 +54,7 @@ export class ShowTaskComponent implements OnInit {
 					        	for (var key in values) {
 					        		if (values.hasOwnProperty(key)) {
 					        			console.log(key + " -> " + values[key]);
-					        			this.enums.push(values[key]);
+					        			this.enums.push(key);
 					        		}
 					        	}
 
