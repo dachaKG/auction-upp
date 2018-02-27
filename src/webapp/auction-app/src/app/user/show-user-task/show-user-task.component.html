@@ -1,0 +1,65 @@
+<div class="row" *ngIf="!rankOrder">
+	<div class="container">
+		<form [formGroup]="showTaskForm" novalidate (ngSubmit)="executeTask()">
+			<div *ngFor="let task of formTasks" class="col-sm-5">
+				<div *ngIf="task.forma.type.name=='string'">
+					<label>{{task.label}}</label>
+					<input type="text" class="form-control" formControlName={{task.forma.id}}>
+				</div>
+				<div *ngIf="task.forma.type.name=='long'">
+					<label>{{task.label}}</label>
+					<input type="number" class="form-control" formControlName={{task.forma.id}}>
+				</div>
+				<div *ngIf="task.forma.type.name=='date'">
+					<label>{{task.label}}</label>
+					<input type="date" class="form-control" formControlName={{task.forma.id}}>
+				</div>
+				<div *ngIf="task.forma.type.name=='enum'">
+					<label>{{task.label}}</label>
+					<select class="form-control" formControlName={{task.forma.id}}>
+						<option value=""></option>
+						<option *ngFor="let taskValue of enums">{{taskValue}}</option>
+					</select> 
+				</div>
+			</div>
+			<button type="submit">OK</button>
+		</form>
+		<pre>{{showTaskForm.value | json}}</pre>
+	</div>
+</div>
+
+<div class="row" *ngIf="rankOrder">
+	<div class="container">
+		<div>
+			<table class="table table-bordered">
+				<thead class="thead-dark">
+					<tr>
+						<th>Cena</th>
+						<th>Firma</th>
+						<th>Opis</th>
+						<th>Datum izvrsenja</th>
+						<th>Ocekivani datum</th>
+						<th>Prihvati ponudu</th>
+						<th>Dodatno objasnjenje</th>
+						
+					</tr>
+				</thead>
+				<tbody>	
+					<tr *ngFor="let enum of enums">
+						<td>{{enum.price}}</td>
+						<td>{{enum.firm.name}}</td>
+						<td>{{enum.orderGoods.description}}</td>
+						<td>{{enum.date | date:'yyyy-MM-dd' }}</td>
+						<td>{{enum.orderGoods.serviceDeadline | date:'yyyy-MM-dd'}}</td>
+						<td><button class="btn" (click)="acceptBid(enum)">Prihvati ponudu</button></td>
+						<td><button class="btn" (click)="explanation(enum)">Dodatno objasnjenje</button></td>
+						
+					</tr>
+				</tbody>
+				<button class="btn" (click)="acceptBid('otkazi')">Otkazi sve ponude</button>
+			</table>
+
+		</div>
+
+	</div>
+</div>

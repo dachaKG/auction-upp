@@ -119,29 +119,7 @@ public class FirmController {
 		System.out.println(params.toString());
 		
 		return "uspesno";
-		/*User user;
-		try{
-			user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		}
-		catch(Exception ex){
-			return "redirect:/login";
-		}
-		
-		String userId = user.getUsername();
-		String message;
-		if (canExecute(taskId, userId)){
-			//pre ovog koraka bi se trebala sprovesti validacija
-			//da li su uneti svi potrebni parametri (required), da li ima neslaganja tipova
-			//ako se unosi email adresa, da li je validna i sl.
-			formService.submitTaskFormData(taskId, params);
-			message = "Zadatak uspeÅ¡no izvrÅ¡en";
-		}
-		else
-			message = "Ne moÅ¾ete izvrÅ¡iti zadatak";
 
-		model.addAttribute("message", message);
-		return showUsersTasks(model);
-*/
 	}
 	
 	private User getUser() {

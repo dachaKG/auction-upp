@@ -26,22 +26,9 @@ export class FirmComponent implements OnInit {
 	}
 
 	showTask(taskId: string){
-		this.firmService
 		console.log(taskId);
 		this.router.navigate(['/task/' + taskId]);
-		/*this.firmService.showTask(taskId)
-			.subscribe(
-				data=>{
-					console.log("prosoa showtask" + data)
-					this.formTask = data;
-					for (var task in this.formTask) {
-
-					}
-
-
-
-				}
-			)*/
+		
 	}
 
 }

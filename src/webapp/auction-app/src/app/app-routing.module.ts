@@ -9,6 +9,7 @@ import { UserComponent } from './user/user.component';
 import { FirmComponent } from './firm/firm.component';
 import { ShowTaskComponent } from './show-task/show-task.component';
 import { UserTasksComponent } from './user/user-tasks/user-tasks.component';
+import { ShowUserTaskComponent } from './user/show-user-task/show-user-task.component'
 
 const routes: Routes = [
 	{ path: '',   component: LoginComponent },
@@ -16,6 +17,7 @@ const routes: Routes = [
 	{ path: 'registration',   component: RegistrationComponent },
 	{ path : 'user', component: UserComponent},
 	{ path : 'user/tasks', component: UserTasksComponent},
+	{ path : 'user/tasks/:taskId', component: ShowUserTaskComponent},
 	{ path : 'firm', component: FirmComponent},
 	{ path : 'task', component: ShowTaskComponent},
 	{ path : 'task/:taskId', component: ShowTaskComponent}

@@ -61,7 +61,7 @@ public class OrderService {
 	IdentityService identityService;
 	
 
-	public OrderObjectDTO sendOrder(Long category, String description, Long estimatedValue, Date receiveDeadline, Long expectedBids, Date serviceDeadline) {
+	public OrderObjectDTO sendOrder(Long category, String description, Long estimatedValue, Date receiveDeadline, Long expectedBids, Date serviceDeadline, String executionId) {
 		SecurityContext context = SecurityContextHolder.getContext();
 		Authentication authentication = context.getAuthentication();
 		User user = userService.findOneByUsername(authentication.getName());
@@ -74,20 +74,44 @@ public class OrderService {
 		orderGoods.setCategory(categoryService.findOne(category));
 		orderGoods.setUser(user);
 		orderGoodService.save(orderGoods);
-		List<Firm> firmList = firmService.findByCategory(orderGoods.getCategory());
-		if(firmList.size() == expectedBids.intValue()) {
-			for(Firm firm : firmList) {
-				
-				List<OrderGoods> orderList = firm.getOrderGoods();
-				orderList.add(orderGoods);
-				firm.setOrderGoods(orderList);
-				System.out.println("Lista ordera " + firm.getOrderGoods().size());
-				firmService.save(firm);
-}
+		List<Firm> allFirmList = firmService.findByCategory(orderGoods.getCategory());
+		List<Firm> firmList = new ArrayList<Firm>();
+		int i = 0; 
+		if(allFirmList.size() >= expectedBids.intValue()) {
+			for(Firm firm : allFirmList) {
+				if(i < expectedBids.intValue()) {
+					List<OrderGoods> orderList = firm.getOrderGoods();
+					orderList.add(orderGoods);
+					firm.setOrderGoods(orderList);
+					System.out.println("Lista ordera " + firm.getOrderGoods().size());
+					firm = firmService.save(firm);
+					firmList.add(firm);
+					i++;
+				} else {
+					break;
+				}
+			}
+		} else {
+			OrderObjectDTO orderDTO = new OrderObjectDTO();
+			orderDTO.setFirms(allFirmList);
+			orderDTO.setOrderGoods(orderGoods);
+			HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService.getVariables(executionId);
+			List<FirmOrder> firmOrderList = new ArrayList<FirmOrder>();
+			//firmOrderList.add(firmOrder);
+			variables.put("ordersFromFirm", firmOrderList);
+			variables.put("numberOfCancel", 0);
+			runtimeService.setVariables(executionId, variables);
+			return orderDTO;
 		}
 		OrderObjectDTO orderDTO = new OrderObjectDTO();
 		orderDTO.setFirms(firmList);
 		orderDTO.setOrderGoods(orderGoods);
+		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService.getVariables(executionId);
+		List<FirmOrder> firmOrderList = new ArrayList<FirmOrder>();
+		//firmOrderList.add(firmOrder);
+		variables.put("ordersFromFirm", firmOrderList);
+		variables.put("numberOfCancel", 0);
+		runtimeService.setVariables(executionId, variables);
 		return orderDTO;
 	}
 	
@@ -125,14 +149,14 @@ public class OrderService {
 		
 	}
 	
-	public List<Firm> prepareOrderList(OrderObjectDTO order, String executionId){
-		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService.getVariables(executionId);
-		List<FirmOrder> firmOrderList = new ArrayList<FirmOrder>();
-		//firmOrderList.add(firmOrder);
-		variables.put("ordersFromFirm", firmOrderList);
-		runtimeService.setVariables(executionId, variables);
-		System.out.println("prepare order list " + executionId);
+	public List<Firm> prepareOrderList(OrderObjectDTO order){
+		
+		System.out.println("prepare order list ");
 		return order.getFirms();
+	}
+	
+	public void sendLessOrders(OrderObjectDTO order) {
+		System.out.println("broj firmi less orders " + order.getFirms().size() );
 	}
 	
 	

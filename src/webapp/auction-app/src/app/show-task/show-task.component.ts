@@ -30,7 +30,6 @@ export class ShowTaskComponent implements OnInit {
 			this.showTaskService.showTask(this.taskId)
 			.subscribe(
 				data=>{
-						//let enumeracija : string[] = new Array();
 						this.formTask = data;
 						var josGroups
 						for (var task in this.formTask) {
@@ -57,14 +56,9 @@ export class ShowTaskComponent implements OnInit {
 					        			this.enums.push(key);
 					        		}
 					        	}
-
-								//this.enums = enumeracija;
 								this.formTask.enum = this.formTask[task].values;
 								console.log(this.formTask[task].values)
 							}
-								//console.log(this.formTask[task].forma.getType());
-								//this.formTask[task].forma.getType().information['values']
-							//if(task.forma.type.informatio['values'])
 						}
 
 
@@ -72,30 +66,12 @@ export class ShowTaskComponent implements OnInit {
 						this.formTasks = data;
 					}
 					)
-			/*this.factorService.get(id)
-			.subscribe(
-				factor => this.factor = factor,
-				);*/
 			}) 
 	}
 
 	proba(){
 		var value = this.showTaskForm.value;
-		var map = new Map<string, string>();
-/*map.set("A",1);
-map.set("B",2);
-map.set("C",3);*/
-		/*for (var key in value) {
-			if (value.hasOwnProperty(key)) {
-				console.log(key + " -> " + value[key]);
-				map.set(key,value[key]);
-				//this.enums.push(value[key]);
-			}
-		}
-*/
 		this.showTaskService.executeTask(this.taskId, value).subscribe();
-		console.log("mapa " + map);
-		console.log("modelTask " + this.showTaskForm.value);
 	}
 
 }

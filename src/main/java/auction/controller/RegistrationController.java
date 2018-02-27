@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -51,6 +52,9 @@ public class RegistrationController {
 	
 	@Autowired
 	FirmService firmService;
+	
+	@Autowired
+	IdentityService identityService;
 
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -61,10 +65,19 @@ public class RegistrationController {
 		user.setConfirmationMail(UUID.randomUUID().toString());
 		user.setConfirmed(false);
 		user = userService.save(user);
+		
 		Task task = taskService.createTaskQuery().active().taskId(taskId).singleResult();
 		System.out.println("aaaaa " + task.getProcessInstanceId());
 		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService.getVariables(task.getProcessInstanceId());
-		
+		org.activiti.engine.identity.User newUser;
+		newUser = identityService.newUser(user.getUsername());
+		newUser.setFirstName(user.getFirstName());
+		newUser.setLastName(user.getLastName());
+		newUser.setEmail(user.getEmail());
+		newUser.setPassword(user.getPassword());
+		identityService.saveUser(newUser);
+		identityService.createMembership(newUser.getId(), user.getRole().toString());
+		//identUsers.add(newUser);
 
 		variables.put("user", user);
 		System.out.println(variables);

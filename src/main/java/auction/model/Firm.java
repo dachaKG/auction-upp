@@ -45,7 +45,7 @@ public class Firm implements Serializable{
 	@OneToMany(mappedBy = "firm", cascade = CascadeType.ALL)
 	private List<User> users = new ArrayList<User>();
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
 	@JoinTable(name = "firm_order_goods", joinColumns = @JoinColumn(name = "firm_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "order_goods_id", referencedColumnName = "id"))
 	private List<OrderGoods> orderGoods = new ArrayList<OrderGoods>();
 

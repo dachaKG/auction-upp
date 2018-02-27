@@ -46,7 +46,7 @@ public class OrderGoods implements Serializable{
 	private User user;
 
 	@JsonIgnore
-	@ManyToMany(mappedBy = "orderGoods")
+	@ManyToMany(mappedBy = "orderGoods", cascade = CascadeType.DETACH)
 	private List<Firm> firm = new ArrayList<Firm>();
 
 	public OrderGoods() {

@@ -42,7 +42,7 @@ public class User implements Serializable {
 	@NotBlank
 	private String password;
 
-	@Column(unique = true)
+	
 	@NotBlank
 	@Email
 	private String email;
