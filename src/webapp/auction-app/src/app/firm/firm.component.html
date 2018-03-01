@@ -4,7 +4,7 @@
 <div *ngFor="let task of tasks">
 	<div class="padding">
 		<button class="btn" (click)="showTask(task.taskId)">
-			{{task.taskName}}
+			{{task.taskName}}({{task.taskId}}) <span *ngIf="task.current">->Trenutni rang ponude: {{task.current}}</span>
 		</button>
 	</div>
 </div>

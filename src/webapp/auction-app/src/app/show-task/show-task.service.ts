@@ -22,6 +22,6 @@ export class ShowTaskService {
 	executeTask(taskId:string, map: any){
 		var headers = new Headers();
 		headers.append('Authorization', 'Bearer ' + localStorage.getItem('app-token'));
-		return this.http.post(this.apiUrl + "/firm/execute/" + taskId, map, { headers: headers }).map(res=>res.json());
+		return this.http.post(this.apiUrl + "/firm/execute/" + taskId, map, { headers: headers }).map(res=>res.text());
 	}
 }

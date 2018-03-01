@@ -20,7 +20,7 @@ export class ShowUserTaskComponent implements OnInit {
 	rankOrder: boolean = false;
 	showTaskForm : FormGroup = new FormGroup({});
 
-	constructor(private route: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder) { }
+	constructor(private route: ActivatedRoute, private userService: UserService, private formBuilder: FormBuilder, private router: Router) { }
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
@@ -77,7 +77,12 @@ export class ShowUserTaskComponent implements OnInit {
 
 	executeTask(){
 		var value = this.showTaskForm.value;
-		this.userService.executeTask(this.taskId, value).subscribe();
+		this.userService.executeTask(this.taskId, value).subscribe(
+			data=>{
+				if(data == "uspesno")
+					this.router.navigate(['/user/tasks']);
+			}
+		);
 	}
 
 	acceptBid(values:any){
@@ -106,7 +111,12 @@ export class ShowUserTaskComponent implements OnInit {
 			bidValue.accept = "";
 		}
 		console.log(bidValue)
-		this.userService.executeTask(this.taskId, bidValue).subscribe();
+		this.userService.executeTask(this.taskId, bidValue).subscribe(
+			data=>{
+				if(data == "uspesno")
+					this.router.navigate(['/user/tasks']);
+			}
+		);
 	}
 
 	explanation(values: any){
@@ -128,7 +138,12 @@ export class ShowUserTaskComponent implements OnInit {
 			}
 		}
 		console.log(bidValue)
-		this.userService.executeTask(this.taskId, bidValue).subscribe();
+		this.userService.executeTask(this.taskId, bidValue).subscribe(
+			data=>{
+				if(data == "uspesno")
+					this.router.navigate(['/user/tasks']);
+			}
+		);
 	
 	}
 

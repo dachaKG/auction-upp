@@ -1,6 +1,8 @@
 package auction.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,34 +34,33 @@ import auction.user.UserService;
 
 @Component
 public class OrderService {
-	
+
 	@Autowired
 	RuntimeService runtimeService;
-	
+
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	RepositoryService repositoryService;
-	
+
 	@Autowired
 	FirmService firmService;
-	
+
 	@Autowired
 	OrderGoodsService orderGoodService;
-	
+
 	@Autowired
 	CategoryService categoryService;
-	
+
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	IdentityService identityService;
-	
 
 	public OrderObjectDTO sendOrder(Long category, String description, Long estimatedValue, Date receiveDeadline, Long expectedBids, Date serviceDeadline, String executionId) {
 		SecurityContext context = SecurityContextHolder.getContext();
@@ -74,7 +75,19 @@ public class OrderService {
 		orderGoods.setCategory(categoryService.findOne(category));
 		orderGoods.setUser(user);
 		orderGoodService.save(orderGoods);
-		List<Firm> allFirmList = firmService.findByCategory(orderGoods.getCategory());
+		List<Firm> allFirmLists = firmService.findByCategory(orderGoods.getCategory());
+		
+		Collections.sort(allFirmLists, new Comparator<Firm>() {
+		    @Override
+		    public int compare(Firm f1, Firm f2) {
+		        return Double.compare(f2.getAvgRank(), f1.getAvgRank());
+		    }
+		});
+		List<Firm> allFirmList = new ArrayList<Firm>();
+		for(Firm firm : allFirmLists) {
+			if(firm.getDistance()>distance(firm.getUsers().get(0).getLatitude(), user.getLatitude(), firm.getUsers().get(0).getLongitude(), user.getLongitude(), 0, 0))
+				allFirmList.add(firm);
+		}
 		List<Firm> firmList = new ArrayList<Firm>();
 		int i = 0; 
 		if(allFirmList.size() >= expectedBids.intValue()) {
@@ -114,18 +127,18 @@ public class OrderService {
 		runtimeService.setVariables(executionId, variables);
 		return orderDTO;
 	}
-	
+
 	public void cancelOrder(OrderGoods order) {
 		try {
 			System.out.println(orderGoodService.findAll().size());
-			orderGoodService.delete(order.getId());
+			// orderGoodService.delete(order.getId());
 			System.out.println("Cancel order");
 			System.out.println(orderGoodService.findAll().size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void changeOrder(OrderGoods order) {
 		System.out.println("change order");
 		MimeMessage message = mailSender.createMimeMessage();
@@ -136,33 +149,51 @@ public class OrderService {
 			helper.setFrom("uppauctionmain@gmail.com");
 			helper.setTo(order.getUser().getEmail());
 			helper.setSubject("Nedovoljan broj firmi");
-			helper.setText("Postovani korisnice nemoguce je dostici vas ocekivani broj ponuda od " + order.getExpectedBids()
+			helper.setText("Postovani korisnice nemoguce je dostici vas ocekivani broj ponuda od "
+					+ order.getExpectedBids()
 					+ ", koliko ste naveli u prijavi zahteva. Molimo Vas da kliknete na link ispod kako bi bili u mogucnosti da promenite broj ponuda \n\n"
-					+ ""
-					+ "http://localhost:4200/user/change?order="+order.getId());
+					+ "" + "http://localhost:4200/user/change?order=" + order.getId());
 			mailSender.send(message);
 			System.out.println("poslat mail");
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public List<Firm> prepareOrderList(OrderObjectDTO order){
-		
+
+	public List<Firm> prepareOrderList(OrderObjectDTO order) {
+
 		System.out.println("prepare order list ");
 		return order.getFirms();
 	}
-	
+
 	public void sendLessOrders(OrderObjectDTO order) {
-		System.out.println("broj firmi less orders " + order.getFirms().size() );
+		System.out.println("broj firmi less orders " + order.getFirms().size());
 	}
-	
-	
-	
+
 	public void baki(List<FirmOrder> firmOrderList) {
 		System.out.println("Baki ");
 	}
 	
+	public static double distance(double lat1, double lat2, double lon1,
+	        double lon2, double el1, double el2) {
+
+	    final int R = 6371; // Radius of the earth
+
+	    double latDistance = Math.toRadians(lat2 - lat1);
+	    double lonDistance = Math.toRadians(lon2 - lon1);
+	    double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+	            + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+	            * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    double distance = R * c * 1000; // convert to meters
+
+	    double height = el1 - el2;
+
+	    distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+	    return Math.sqrt(distance);
+	}
+
 }

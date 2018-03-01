@@ -49,13 +49,15 @@ public class FirmController {
 
 		User user = getUser();
 		//Firm firm = user.getFirm();
-		
+		System.out.println("korisnik " + user.getUsername());
 		List<Task> taskList = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
 		
 		List<Map<String, Object>> customTaskList = new ArrayList<>();
 	    for (Task task : taskList) {
 	        Map<String, Object> map = new HashMap<>();
 	        map.put("taskId", task.getId());
+	        if(task.getName().equals("Promeni ponudu"))
+	        	map.put("current", task.getDescription());
 	        System.out.println("id taska " + task.getId());
 	        map.put("taskDefinitionKey", task.getTaskDefinitionKey());
 	        map.put("taskName", task.getName());
@@ -113,6 +115,7 @@ public class FirmController {
 			//pre ovog koraka bi se trebala sprovesti validacija
 			//da li su uneti svi potrebni parametri (required), da li ima neslaganja tipova
 			//ako se unosi email adresa, da li je validna i sl.
+			
 			formService.submitTaskFormData(taskId, params);
 			//message = "Zadatak uspeÅ¡no izvrÅ¡en";
 		}

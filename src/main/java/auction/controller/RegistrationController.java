@@ -21,6 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
+
 import auction.dto.FirmDTO;
 import auction.model.Category;
 import auction.model.Firm;
@@ -46,13 +52,13 @@ public class RegistrationController {
 
 	@Autowired
 	RepositoryService repositoryService;
-	
+
 	@Autowired
 	CategoryService categoryService;
-	
+
 	@Autowired
 	FirmService firmService;
-	
+
 	@Autowired
 	IdentityService identityService;
 
@@ -64,11 +70,26 @@ public class RegistrationController {
 		user.setPassword(encoder.encode(user.getPassword()));
 		user.setConfirmationMail(UUID.randomUUID().toString());
 		user.setConfirmed(false);
+		GeoApiContext context = new GeoApiContext();
+		context.setApiKey("AIzaSyASF6y07zHHdxEu3TANs2q6-ZGkh8UvKYk");
+		GeocodingResult[] results;
+		try {
+			results = GeocodingApi.geocode(context, user.getCity()).await();
+			//Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			user.setLongitude((long) results[0].geometry.location.lng);
+			user.setLatitude((long) results[0].geometry.location.lat);
+			// u.setLatitude(Long.parseLong(gson.toJson(results[0].geometry.location.lat)));
+			// u.setLongitude(Long.parseLong(gson.toJson(results[0].geometry.location.lng)))'
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		user = userService.save(user);
-		
+
 		Task task = taskService.createTaskQuery().active().taskId(taskId).singleResult();
 		System.out.println("aaaaa " + task.getProcessInstanceId());
-		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService.getVariables(task.getProcessInstanceId());
+		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService
+				.getVariables(task.getProcessInstanceId());
 		org.activiti.engine.identity.User newUser;
 		newUser = identityService.newUser(user.getUsername());
 		newUser.setFirstName(user.getFirstName());
@@ -77,13 +98,14 @@ public class RegistrationController {
 		newUser.setPassword(user.getPassword());
 		identityService.saveUser(newUser);
 		identityService.createMembership(newUser.getId(), user.getRole().toString());
-		//identUsers.add(newUser);
+		// identUsers.add(newUser);
 
 		variables.put("user", user);
 		System.out.println(variables);
 		taskService.complete(taskId, variables);
-		if(user.getRole().compareTo(EnumRole.ROLE_FIRM) == 0) {
-			Task taskFirm = taskService.createTaskQuery().active().list().get(taskService.createTaskQuery().active().list().size() - 1);
+		if (user.getRole().compareTo(EnumRole.ROLE_FIRM) == 0) {
+			Task taskFirm = taskService.createTaskQuery().active().list()
+					.get(taskService.createTaskQuery().active().list().size() - 1);
 			Map<String, Object> taskMap = new HashMap<String, Object>();
 			taskMap.put("taskId", taskFirm.getId());
 			taskMap.put("name", taskFirm.getName());
@@ -91,7 +113,7 @@ public class RegistrationController {
 			System.out.println("firma task id " + taskFirm.getId() + " task name " + taskFirm.getName());
 			return new ResponseEntity<>(taskMap, HttpStatus.OK);
 		}
-		
+
 		return new ResponseEntity<>(variables, HttpStatus.OK);
 		// User newUser = userService.save(user);
 
@@ -99,9 +121,10 @@ public class RegistrationController {
 
 	@GetMapping("/activateProcess")
 	public ResponseEntity<Map<String, Object>> getTask() {
-		/*for (Deployment d : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(d.getId(), true);
-        }*/
+		/*
+		 * for (Deployment d : repositoryService.createDeploymentQuery().list()) {
+		 * repositoryService.deleteDeployment(d.getId(), true); }
+		 */
 		System.out.println("Ukupan broj deployment-a: " + repositoryService.createDeploymentQuery().count());
 		runtimeService.startProcessInstanceByKey("myProcess");
 
@@ -114,28 +137,29 @@ public class RegistrationController {
 		System.out.println("task id " + task.getId() + " task name " + task.getName());
 		return new ResponseEntity<>(taskMap, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/firm/{taskId}")
-	public ResponseEntity<Map<String, Object>> registerFirm(@PathVariable String taskId, @RequestBody FirmDTO firmDTO){
+	public ResponseEntity<Map<String, Object>> registerFirm(@PathVariable String taskId, @RequestBody FirmDTO firmDTO) {
 		Category category = categoryService.findOne(firmDTO.getCategory());
-		//User mailUser = userService.findOneByUsername(firmDTO.getUsername());
+		// User mailUser = userService.findOneByUsername(firmDTO.getUsername());
 		Firm firm = new Firm();
 		firm.setName(firmDTO.getName());
 		firm.setCategory(category);
 		firm.setDistance(firmDTO.getDistance());
 		User user = userService.findOneByUsername(firmDTO.getUsername());
 		firm = firmService.save(firm);
-		
+
 		user.setFirm(firm);
 		userService.save(user);
 		Task task = taskService.createTaskQuery().active().taskId(taskId).singleResult();
 		System.out.println("aaaaa " + task.getProcessInstanceId());
-		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService.getVariables(task.getProcessInstanceId());
+		HashMap<String, Object> variables = (HashMap<String, Object>) runtimeService
+				.getVariables(task.getProcessInstanceId());
 		variables.put("user", user);
 		System.out.println(variables);
-		
+
 		taskService.complete(taskId, variables);
-		
+
 		return new ResponseEntity<>(variables, HttpStatus.OK);
 	}
 

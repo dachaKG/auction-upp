@@ -27,7 +27,7 @@ export class FirmComponent implements OnInit {
 
 	showTask(taskId: string){
 		console.log(taskId);
-		this.router.navigate(['/task/' + taskId]);
+		this.router.navigate(['/firm/tasks/' + taskId]);
 		
 	}
 

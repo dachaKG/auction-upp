@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,7 +26,6 @@ import auction.model.OrderGoods;
 @Entity
 public class User implements Serializable {
 
-
 	/**
 	 * 
 	 */
@@ -42,7 +42,6 @@ public class User implements Serializable {
 	@NotBlank
 	private String password;
 
-	
 	@NotBlank
 	@Email
 	private String email;
@@ -58,32 +57,33 @@ public class User implements Serializable {
 
 	@NotBlank
 	private String city;
+	
+	private double longitude;
+	
+	private double latitude;
 
 	@NotBlank
 	private String zipCode;
 
 	@Enumerated(EnumType.STRING)
 	private EnumRole role;
-	
-	@Column(nullable=true, unique=true)
-	private String confirmationMail;
-	
-	private boolean confirmed;
-	
-	@JsonIgnore
-	@OneToMany(mappedBy="user")
-	private List<OrderGoods> orderGoods = new ArrayList<OrderGoods>();
 
-	/*
-	 * @ManyToMany(fetch = FetchType.EAGER)
-	 * 
-	 * @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id",
-	 * referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name =
-	 * "role_id", referencedColumnName = "id")) private List<Role> roles;
-	 */
+	@Column(nullable = true, unique = true)
+	private String confirmationMail;
+
+	private boolean confirmed;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private List<OrderGoods> orderGoods = new ArrayList<OrderGoods>();
 
 	@ManyToOne
 	private Firm firm;
+
+	@ElementCollection
+	private List<Integer> ranks;
+
+	private double avgRank;
 
 	public User() {
 		super();
@@ -202,4 +202,45 @@ public class User implements Serializable {
 		this.orderGoods = orderGoods;
 	}
 
+	public List<Integer> getRanks() {
+		return ranks;
+	}
+
+	public void setRanks(List<Integer> ranks) {
+		this.ranks = ranks;
+	}
+
+	public double getAvgRank() {
+		double sum = 0;
+		avgRank = 0;
+		for (int i = 0; i < this.ranks.size(); i++) {
+			sum += ranks.get(i);
+
+		}
+		avgRank = sum / this.ranks.size();
+
+		return avgRank;
+	}
+
+	public void setAvgRank(double avgRank) {
+		this.avgRank = avgRank;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	
+	
 }

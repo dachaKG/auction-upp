@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import auction.user.User;
 
 @Entity
-public class Firm implements Serializable{
+public class Firm implements Serializable {
 
 	/**
 	 * 
@@ -44,13 +45,18 @@ public class Firm implements Serializable{
 	@JsonIgnore
 	@OneToMany(mappedBy = "firm", cascade = CascadeType.ALL)
 	private List<User> users = new ArrayList<User>();
-	
+
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
 	@JoinTable(name = "firm_order_goods", joinColumns = @JoinColumn(name = "firm_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "order_goods_id", referencedColumnName = "id"))
 	private List<OrderGoods> orderGoods = new ArrayList<OrderGoods>();
 
 	@ManyToOne
 	private Category category;
+
+	@ElementCollection
+	private List<Integer> ranks;
+
+	private double avgRank;
 
 	public Firm() {
 		super();
@@ -104,7 +110,29 @@ public class Firm implements Serializable{
 	public void setOrderGoods(List<OrderGoods> orderGoods) {
 		this.orderGoods = orderGoods;
 	}
-	
-	
+
+	public List<Integer> getRanks() {
+		return ranks;
+	}
+
+	public void setRanks(List<Integer> ranks) {
+		this.ranks = ranks;
+	}
+
+	public double getAvgRank() {
+		double sum = 0;
+		avgRank = 0;
+		for (int i = 0; i < this.ranks.size(); i++) {
+			sum += ranks.get(i);
+
+		}
+		avgRank = sum / this.ranks.size();
+
+		return avgRank;
+	}
+
+	public void setAvgRank(double avgRank) {
+		this.avgRank = avgRank;
+	}
 
 }

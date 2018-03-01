@@ -19,8 +19,8 @@ const routes: Routes = [
 	{ path : 'user/tasks', component: UserTasksComponent},
 	{ path : 'user/tasks/:taskId', component: ShowUserTaskComponent},
 	{ path : 'firm', component: FirmComponent},
-	{ path : 'task', component: ShowTaskComponent},
-	{ path : 'task/:taskId', component: ShowTaskComponent}
+	{ path : 'firm/tasks', component: ShowTaskComponent},
+	{ path : 'firm/tasks/:taskId', component: ShowTaskComponent}
 
 ];
 

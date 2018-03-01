@@ -18,7 +18,7 @@ export class ShowTaskComponent implements OnInit {
 	modelTask: any;
 	showTaskForm : FormGroup = new FormGroup({});
 
-	constructor(private route: ActivatedRoute, private showTaskService: ShowTaskService, private formBuilder: FormBuilder) { }
+	constructor(private route: ActivatedRoute, private showTaskService: ShowTaskService, private formBuilder: FormBuilder, private router: Router) { }
 
 	ngOnInit() {
 		this.route.params.subscribe(params => {
@@ -71,7 +71,12 @@ export class ShowTaskComponent implements OnInit {
 
 	proba(){
 		var value = this.showTaskForm.value;
-		this.showTaskService.executeTask(this.taskId, value).subscribe();
+		this.showTaskService.executeTask(this.taskId, value).subscribe(
+			data=>{
+				if(data == "uspesno")
+					this.router.navigate(['/firm']);
+			}
+		);
 	}
 
 }
